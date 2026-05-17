@@ -45,7 +45,7 @@ class FrontPage extends StatelessWidget {
           ),
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.only(top: 30),
+              padding: const EdgeInsets.only(top: 40),
               child: Column(
                 children: [
                   // TOP SECTION
