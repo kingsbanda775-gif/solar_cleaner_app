@@ -45,28 +45,25 @@ class FrontPage extends StatelessWidget {
           ),
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.only(top: 40),
+              padding: const EdgeInsets.only(top: 30),
               child: Column(
                 children: [
                   // TOP SECTION
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  Column(
                     children: [
                       // TITLE
-                      const Expanded(
-                        child: Text(
-                          'AUTOMATIC SOLAR PANEL CLEANING SYSTEM',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 50,
-                            fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            height: 1.2,
-                          ),
+                      const Text(
+                        'AUTOMATIC SOLAR PANEL CLEANING SYSTEM',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 34,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          height: 1.2,
                         ),
                       ),
 
-                      const SizedBox(width: 15),
+                      const SizedBox(height: 20),
 
                       // LOGO
                       Container(
@@ -74,18 +71,20 @@ class FrontPage extends StatelessWidget {
                           color: Colors.white.withOpacity(0.9),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        padding: const EdgeInsets.all(8),
-                        child: Image.asset('assets/solar_logo.png', height: 80),
+                        padding: const EdgeInsets.all(5),
+                        child: Image.asset('assets/solar_logo.png', height: 90),
                       ),
                     ],
                   ),
-
                   const Spacer(),
 
                   // STATUS CARD
                   Container(
-                    width: 420,
-                    padding: const EdgeInsets.all(18),
+                    width: 250,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 10,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.green.shade100.withOpacity(0.92),
                       borderRadius: BorderRadius.circular(18),
@@ -98,24 +97,27 @@ class FrontPage extends StatelessWidget {
                         Text(
                           'SYSTEM STATUS: Active',
                           style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
                     ),
                   ),
 
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 18),
 
                   // BUTTON
                   SizedBox(
-                    width: 300,
+                    width: 250,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 18),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 15,
+                          vertical: 10,
+                        ),
                         backgroundColor: Colors.white,
-                        foregroundColor: Colors.indigo,
+                        foregroundColor: const Color.fromARGB(255, 32, 111, 43),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
@@ -131,14 +133,14 @@ class FrontPage extends StatelessWidget {
                       child: const Text(
                         'VIEW SYSTEM',
                         style: TextStyle(
-                          fontSize: 22,
+                          fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 18),
                 ],
               ),
             ),
