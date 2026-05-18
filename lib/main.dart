@@ -160,16 +160,40 @@ class SystemPage extends StatelessWidget {
     String lastCleanedTime = 'Today at 10:30 AM';
 
     return Scaffold(
-      appBar: AppBar(title: const Text('System Operation'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text(
+          'SYSTEM OPERATION',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            const Text(
-              'How the System Works',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Expanded(
+                  child: Text(
+                    'How the System Works',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OptionsPage(),
+                      ),
+                    );
+                  },
+                  child: const Text('OPTIONS'),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 22),
 
             systemStep(
               icon: Icons.camera_alt,
@@ -222,16 +246,6 @@ class SystemPage extends StatelessWidget {
             ),
 
             const Spacer(),
-
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const OptionsPage()),
-                );
-              },
-              child: const Text('Go to Options'),
-            ),
           ],
         ),
       ),
@@ -267,17 +281,10 @@ class _OptionsPageState extends State<OptionsPage> {
   bool waterPump = false;
   bool motorCleaner = false;
 
-  List<String> cleaningHistory = [
-    'Cleaned today at 10:30 AM',
-    'Cleaned yesterday at 04:15 PM',
-    'Cleaned on Monday at 09:00 AM',
-  ];
-
   void startManualCleaning() {
     setState(() {
       waterPump = true;
       motorCleaner = true;
-      cleaningHistory.insert(0, 'Manual cleaning started just now');
     });
 
     ScaffoldMessenger.of(
@@ -289,7 +296,6 @@ class _OptionsPageState extends State<OptionsPage> {
     setState(() {
       waterPump = false;
       motorCleaner = false;
-      cleaningHistory.insert(0, 'Manual cleaning stopped');
     });
 
     ScaffoldMessenger.of(
@@ -300,12 +306,18 @@ class _OptionsPageState extends State<OptionsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Options'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text(
+          'OPTIONS',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+      ),
       body: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(22),
         children: [
           const Text(
-            'Settings',
+            'SETTINGS',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           SwitchListTile(
@@ -324,7 +336,7 @@ class _OptionsPageState extends State<OptionsPage> {
           const Divider(),
 
           const Text(
-            'Manual Operation',
+            'MANUAL OPERATION',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           ListTile(
@@ -362,19 +374,6 @@ class _OptionsPageState extends State<OptionsPage> {
           ),
 
           const Divider(height: 40),
-
-          const Text(
-            'Cleaning History',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-          ...cleaningHistory.map(
-            (history) => Card(
-              child: ListTile(
-                leading: const Icon(Icons.history, color: Colors.green),
-                title: Text(history),
-              ),
-            ),
-          ),
         ],
       ),
     );
