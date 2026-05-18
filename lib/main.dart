@@ -1,4 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+const String piBaseUrl = 'http://192.168.100.251:5000';
 
 void main() {
   runApp(const SolarCleanerApp());
@@ -40,9 +44,7 @@ class FrontPage extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          Positioned.fill(
-            child: Container(color: Colors.black.withOpacity(0.0)),
-          ),
+          Positioned.fill(child: Container(color: Colors.black.withAlpha(0))),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.only(top: 30),
@@ -68,7 +70,7 @@ class FrontPage extends StatelessWidget {
                       // LOGO
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withAlpha(230),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         padding: const EdgeInsets.all(5),
@@ -86,7 +88,7 @@ class FrontPage extends StatelessWidget {
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.green.shade100.withOpacity(0.92),
+                      color: Colors.green.shade100.withAlpha(235),
                       borderRadius: BorderRadius.circular(18),
                     ),
                     child: const Row(
@@ -277,30 +279,62 @@ class OptionsPage extends StatefulWidget {
 }
 
 class _OptionsPageState extends State<OptionsPage> {
+  String systemStatus = 'Checking...';
+  String mode = 'Unknown';
+  String dustLevel = 'Unknown';
+  String lastCleaned = 'Not available';
+  String pumpStatus = 'OFF';
+  String motorStatus = 'OFF';
   bool automaticMode = true;
   bool waterPump = false;
   bool motorCleaner = false;
 
-  void startManualCleaning() {
-    setState(() {
-      waterPump = true;
-      motorCleaner = true;
-    });
+  List<String> cleaningHistory = [
+    'Cleaned today at 10:30 AM',
+    'Cleaned yesterday at 04:15 PM',
+  ];
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Manual cleaning started')));
+  Future<void> getSystemStatus() async {
+    try {
+      final response = await http.get(Uri.parse('$piBaseUrl/status'));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        setState(() {
+          systemStatus = data['system_status'];
+          mode = data['mode'];
+          dustLevel = data['dust_level'];
+          lastCleaned = data['last_cleaned'];
+          pumpStatus = data['pump'];
+          motorStatus = data['motor'];
+        });
+      }
+    } catch (e) {
+      setState(() {
+        systemStatus = 'Offline';
+      });
+    }
   }
 
-  void stopManualCleaning() {
-    setState(() {
-      waterPump = false;
-      motorCleaner = false;
-    });
+  @override
+  void initState() {
+    super.initState();
+    getSystemStatus();
+  }
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Manual cleaning stopped')));
+  Widget monitoringCard(String title, String value, IconData icon) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ListTile(
+        leading: Icon(icon, color: Colors.green),
+        title: Text(title),
+        subtitle: Text(
+          value,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
   }
 
   @override
@@ -317,63 +351,33 @@ class _OptionsPageState extends State<OptionsPage> {
         padding: const EdgeInsets.all(22),
         children: [
           const Text(
-            'SETTINGS',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-          SwitchListTile(
-            title: const Text('Automatic Cleaning Mode'),
-            subtitle: const Text(
-              'System cleans automatically when dust is detected',
-            ),
-            value: automaticMode,
-            onChanged: (value) {
-              setState(() {
-                automaticMode = value;
-              });
-            },
+            'System Monitoring',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
 
-          const Divider(),
+          const SizedBox(height: 20),
 
-          const Text(
-            'MANUAL OPERATION',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          monitoringCard(
+            'System Status',
+            systemStatus,
+            Icons.power_settings_new,
           ),
-          ListTile(
-            leading: Icon(
-              waterPump ? Icons.water_drop : Icons.water_drop_outlined,
-              color: waterPump ? Colors.green : Colors.grey,
-            ),
-            title: Text('Water Pump: ${waterPump ? "ON" : "OFF"}'),
-          ),
-          ListTile(
-            leading: Icon(
-              motorCleaner ? Icons.settings : Icons.settings_outlined,
-              color: motorCleaner ? Colors.green : Colors.grey,
-            ),
-            title: Text('Motor Cleaner: ${motorCleaner ? "ON" : "OFF"}'),
+          monitoringCard('Mode', mode, Icons.settings),
+          monitoringCard('Dust Level', dustLevel, Icons.cloud),
+          monitoringCard('Last Cleaned', lastCleaned, Icons.access_time),
+          monitoringCard('Water Pump', pumpStatus, Icons.water_drop),
+          monitoringCard(
+            'Motor Cleaner',
+            motorStatus,
+            Icons.precision_manufacturing,
           ),
 
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: startManualCleaning,
-                  child: const Text('Start Cleaning'),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                  onPressed: stopManualCleaning,
-                  child: const Text('Stop'),
-                ),
-              ),
-            ],
-          ),
+          const SizedBox(height: 20),
 
-          const Divider(height: 40),
+          ElevatedButton(
+            onPressed: getSystemStatus,
+            child: const Text('Refresh Status'),
+          ),
         ],
       ),
     );
