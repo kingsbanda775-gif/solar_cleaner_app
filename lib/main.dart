@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -21,7 +22,7 @@ class SolarCleanerApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color.fromARGB(255, 33, 16, 108),
         ),
-        scaffoldBackgroundColor: const Color.fromARGB(0, 3, 3, 3),
+        scaffoldBackgroundColor: const Color(0xFFF6F7FB),
       ),
       home: const FrontPage(),
     );
@@ -317,10 +318,23 @@ class _OptionsPageState extends State<OptionsPage> {
     }
   }
 
+  Timer? statusTimer;
+
   @override
   void initState() {
     super.initState();
+
     getSystemStatus();
+
+    statusTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
+      getSystemStatus();
+    });
+  }
+
+  @override
+  void dispose() {
+    statusTimer?.cancel();
+    super.dispose();
   }
 
   Widget monitoringCard(String title, String value, IconData icon) {
