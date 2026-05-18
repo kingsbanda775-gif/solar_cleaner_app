@@ -2,10 +2,17 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'firebase_options.dart';
 
 const String piBaseUrl = 'http://192.168.100.251:5000';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(const SolarCleanerApp());
 }
 
@@ -296,24 +303,24 @@ class _OptionsPageState extends State<OptionsPage> {
   ];
 
   Future<void> getSystemStatus() async {
-    try {
-      final response = await http.get(Uri.parse('$piBaseUrl/status'));
+    final ref = FirebaseDatabase.instance.ref('solar_system');
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+    final snapshot = await ref.get();
 
-        setState(() {
-          systemStatus = data['system_status'];
-          mode = data['mode'];
-          dustLevel = data['dust_level'];
-          lastCleaned = data['last_cleaned'];
-          pumpStatus = data['pump'];
-          motorStatus = data['motor'];
-        });
-      }
-    } catch (e) {
+    if (snapshot.exists) {
+      final data = Map<String, dynamic>.from(snapshot.value as Map);
+
       setState(() {
-        systemStatus = 'Offline';
+        systemStatus = data['system_status'] ?? 'Unknown';
+        mode = data['mode'] ?? 'Unknown';
+        dustLevel = data['dust_level'] ?? 'Unknown';
+        lastCleaned = data['last_cleaned'] ?? 'Not available';
+        pumpStatus = data['pump'] ?? 'OFF';
+        motorStatus = data['motor'] ?? 'OFF';
+      });
+    } else {
+      setState(() {
+        systemStatus = 'No Firebase Data';
       });
     }
   }

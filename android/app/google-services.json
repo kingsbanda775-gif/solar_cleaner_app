@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "184877146020",
+    "firebase_url": "https://solar-cleaner-system-default-rtdb.firebaseio.com",
+    "project_id": "solar-cleaner-system",
+    "storage_bucket": "solar-cleaner-system.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:184877146020:android:5dcd8a746e62634df46b31",
+        "android_client_info": {
+          "package_name": "com.example.solar_cleaner_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBd__Bso63-fl8MAC0jM2loIyJzJHaaD8w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
